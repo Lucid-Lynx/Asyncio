@@ -63,7 +63,7 @@ async def fetch_silent(pid):
 
 
 async def fetch_manager():
-    tasks = [asyncio.ensure_future(fetch(i)) for i in range(1, MAX_CLIENTS + 1)]
+    tasks = [asyncio.create_task(fetch(i)) for i in range(1, MAX_CLIENTS + 1)]
     await asyncio.wait(tasks)
 
 
@@ -76,12 +76,12 @@ async def fetch_manager_silent():
 
 
 async def fetch_manager_one():
-    futures = [asyncio.ensure_future(fetch_silent(i)) for i in range(1, MAX_CLIENTS + 1)]
-    done, pending = await asyncio.wait(futures, return_when=FIRST_COMPLETED)
+    tasks = [asyncio.create_task(fetch_silent(i)) for i in range(1, MAX_CLIENTS + 1)]
+    done, pending = await asyncio.wait(tasks, return_when=FIRST_COMPLETED)
     print(done.pop().result())
 
-    for future in pending:
-        future.cancel()
+    for task in pending:
+        task.cancel()
 
 
 def example_1():
