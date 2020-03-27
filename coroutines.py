@@ -68,7 +68,7 @@ async def fetch_manager():
 
 
 async def fetch_manager_silent():
-    tasks = [fetch_silent(i) for i in range(1, MAX_CLIENTS + 1)]
+    tasks = [asyncio.create_task(fetch_silent(i)) for i in range(1, MAX_CLIENTS + 1)]
 
     for i, task in enumerate(asyncio.as_completed(tasks)):
         result = await task
